@@ -26,7 +26,7 @@ class LoginRequest extends FormRequest
          // validate request
         return [
             'email' => 'required|email',
-            'password' => 'required'
+            'password' => 'required',
         ];
     }
 }

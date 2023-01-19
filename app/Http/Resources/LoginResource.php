@@ -19,7 +19,7 @@ class LoginResource extends JsonResource
             'email' => $this['user']->email,
             'name' => $this['user']->name,
             'token' => $this['token'],
-        ]
+        ];
 
     }
 }

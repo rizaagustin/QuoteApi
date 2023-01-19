@@ -13,29 +13,23 @@ use Illuminate\Support\Facades\Auth;
 class ApiAuthController extends Controller
 {
 
-    public function login(LoginRequest $request){
-        
-        // check if user exist
-        $user = User::where('email',$request->email)->first();
-
-        //check if password correct dan user ada
-        if (!$user|| Hash::check($request->password,$user->password)) {
+    public function login(LoginRequest $request){        
+        // validate dengan Auth:attemp bawan laravel
+        $credentials = $request->only('email','password');
+        if (Auth::attempt($credentials)) {
+            // jika berhasil berikan token
+            $user = User::where('email', $request->email)->first();
+            $token = $user->createToken('token')->plainTextToken;
+            return new LoginResource([
+                'user' => $user,
+                'token' => $token
+            ]);
+        }else{
+            // jika gagal response error    
             return response()->json([
-                'message' => 'Bad credentials'
+                'message' => 'Invalid Credentials'
             ],401);
         }
-
-        //generate token
-        // bebas bisa nama token, soko atau dll
-        // return $user->createToken('token')->plainTextToken;
-        $token = $user->createToken('token')->plainTextToken;
-
-        // yg di kembalikan array bukan model seperti quote resorce
-        return new LoginResource([
-            // 'message' => 'success',
-            'user' => $user,
-            'token' => $token,
-        ]);
     }
 
     public function register(Request $request){
