@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Http\Controllers\QuoteController;
+use App\Http\Controllers\UploadFileController;
 use App\Models\Quote;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -20,13 +21,21 @@ Route::get('/hello', function () {
     return response()->json($data,200);
 });
 
+Route::middleware('auth:sanctum')->get('/user', function(Request $request){
+    return $request->user();
+});
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/quote',QuoteController::class);
     Route::post('/logout', [ApiAuthController::class, 'logout']);
 });
 
 // bisa di akses di public
+Route::post('/register', [ApiAuthController::class,'register']);
 Route::post('/login', [ApiAuthController::class, 'login']);
-Route::post('/register', [ApiAuthController::class, 'register']);
+
+Route::post('/login', [ApiAuthController::class, 'login']);
+Route::post('/file-upload', [UploadFileController::class, 'uploadFile']);
+
 
 
